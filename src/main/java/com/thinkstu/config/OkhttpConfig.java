@@ -10,8 +10,17 @@ import org.springframework.context.annotation.*;
 @Configuration
 public class OkhttpConfig {
     @Bean
+    @Primary
     OkHttpClient getOkhttp() {
         return new OkHttpClient().newBuilder()
+                .build();
+    }
+
+    @Bean("noRedirect")
+    OkHttpClient getNoRedirectOkhttp() {
+        return new OkHttpClient().newBuilder()
+                .followRedirects(false)
+                .followSslRedirects(false)
                 .build();
     }
 }

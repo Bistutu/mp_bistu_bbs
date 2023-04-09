@@ -11,13 +11,15 @@ import org.jsoup.nodes.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommonEntity {
+    String nickname;
     String detail;
     String score;
     String evaluate;
 
-    public CommonEntity(Element one) {
+    public CommonEntity(Element one, String nickname) {
         this.detail = one.text();
         this.score = one.nextElementSibling().text();
         this.evaluate = one.nextElementSibling().nextElementSibling().text();
+        this.nickname = nickname;
     }
 }
