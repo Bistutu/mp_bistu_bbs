@@ -110,6 +110,6 @@ public class LoginController {
         other.setYy(new CommonEntity(yy, "右眼视力"));
         other.setZy(new CommonEntity(zy, "右眼视力"));
 
-        return new ManEntity(info, other);
+        return new ManEntity(info, other, "");
     }
 }

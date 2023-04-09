@@ -12,4 +12,5 @@ import lombok.*;
 public class ManEntity {
     Info info;
     Other other;
+    String massage;
 }
