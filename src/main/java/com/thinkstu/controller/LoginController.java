@@ -27,28 +27,46 @@ public class LoginController {
 
     @GetMapping("/{id}")
     ManEntity login(@PathVariable("id") String id) throws IOException {
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "studentno=" + id
-                + "&studentpassword=21218cca77804d2ba1922c33e0151105&btnlogin=登　　录");
         Request request = new Request.Builder()
+                .url("http://www.sknow.com.cn/login.php?schoolno=11232")
+                .addHeader("User-Agent", user_agent)
+                .build();
+        Response response   = client.newCall(request).execute();
+        String   set_cookie = response.header("set-cookie");
+        String   PHPSESSION = set_cookie.substring(set_cookie.indexOf("=") + 1, set_cookie.lastIndexOf(";"));
+        response.close();
+        // 利用此发送第二个请求
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, "studentno=" + id +
+                "&studentpassword=21218cca77804d2ba1922c33e0151105&btnlogin=登　　录");
+        request = new Request.Builder()
                 .url("http://www.sknow.com.cn/login.php?type=student")
                 .method("POST", body)
+                .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+                .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
+                .addHeader("Cache-Control", "max-age=0")
+                .addHeader("DNT", "1")
+                .addHeader("Origin", "http://www.sknow.com.cn")
+                .addHeader("Proxy-Connection", "keep-alive")
                 .addHeader("Referer", "http://www.sknow.com.cn/login.php?schoolno=11232")
+                .addHeader("Upgrade-Insecure-Requests", "1")
                 .addHeader("User-Agent", user_agent)
-                .addHeader("Cookie", "PHPSESSID=pse63n9pk5cvduhqgrb1l5mqg2; userKey=74287596b3b471e10a8ebc05927b7bf4")
+                .addHeader("Cookie", "PHPSESSID=" + PHPSESSION)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .build();
-        Response response   = noRedirectOkhttp.newCall(request).execute();
-        String   set_cookie = response.header("set-cookie");
-        // 利用此发送第二个请求
+        response = noRedirectOkhttp.newCall(request).execute();
+        set_cookie = response.header("set-cookie");
+        response.close();
+
+        // 发送第三个请求
         request = new Request.Builder()
                 .url("http://www.sknow.com.cn/main.php")
-                .addHeader("Cookie", "PHPSESSID=pse63n9pk5cvduhqgrb1l5mqg2; userKey=" + set_cookie.substring(set_cookie.indexOf("=") + 1))
+                .addHeader("Cookie", "PHPSESSID=" + PHPSESSION + "; userKey=" + set_cookie.substring(set_cookie.indexOf("=") + 1))
                 .addHeader("User-Agent", user_agent)
                 .build();
         response = client.newCall(request).execute();
-
-        String   data    = response.body().string();
+        String data = response.body().string();
+        response.close();
         Document doc     = Jsoup.parse(data);
         String   name    = doc.select("tr.table_wbg td:containsOwn(姓名)").first().nextElementSibling().text();
         String   sex     = doc.select("tr.table_wbg td:containsOwn(性别)").first().nextElementSibling().text();
