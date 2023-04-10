@@ -34,8 +34,8 @@ public class TipsUtils {
     CheckScoreUtils checkScoreUtils;
 
     public ResultEntity bmiEvaluate(Info info, Other other) {
-        String                  bmi     = other.getBmi().getDetail();
-        HashMap<String, String> hashMap = new HashMap<>();
+        String                    bmi  = other.getBmi().getDetail();
+        ArrayList<EvaluateEntity> list = new ArrayList<>();
 
         Integer ldty     = checkScoreUtils.check(other.getLdty().getScore());
         Integer fhl      = checkScoreUtils.check(other.getFhl().getScore());
@@ -146,8 +146,8 @@ public class TipsUtils {
             } else if (ytxs >= 90 && ytxs <= 100) {
                 ytxsString = ytxsStringConfig.getFail()[new Random().nextInt(5)];
             }
-            hashMap.put("引体向上", ytxsString);
-            hashMap.put("1000米跑", runLongString);
+            list.add(new EvaluateEntity("引体向上", ytxsString));
+            list.add(new EvaluateEntity("1000米跑", runLongString));
         } else {
             if (ytxs >= 0 && ytxs <= 59) {
                 ytxsString = ywqzStringConfig.getExcellent()[new Random().nextInt(5)];
@@ -158,19 +158,21 @@ public class TipsUtils {
             } else if (ytxs >= 90 && ytxs <= 100) {
                 ytxsString = ywqzStringConfig.getFail()[new Random().nextInt(5)];
             }
-            hashMap.put("仰卧起坐", ytxsString);
-            hashMap.put("800米跑", runLongString);
+            list.add(new EvaluateEntity("仰卧起坐", ytxsString));
+            list.add(new EvaluateEntity("800米跑", runLongString));
         }
 
         // 对 Tips 进行修改
-        hashMap.put("BMI", BMIMsg);
-        hashMap.put("立定跳远", ldtyString);
-        hashMap.put("肺活量", fhlString);
-        hashMap.put("50米跑", runShortString);
-        hashMap.put("坐位体前屈", zwtqqString);
+        list.add(new EvaluateEntity("BMI", BMIMsg));
+        list.add(new EvaluateEntity("立定跳远", ldtyString));
+        list.add(new EvaluateEntity("肺活量", fhlString));
+        list.add(new EvaluateEntity("50米跑", runShortString));
+        list.add(new EvaluateEntity("坐位体前屈", zwtqqString));
 
         tips.setLevel(level);
-        tips.setMessage(hashMap);
+
+        tips.setMessage(list);
+
 
         return new ResultEntity(info, other, tips);
     }

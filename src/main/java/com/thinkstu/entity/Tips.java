@@ -14,5 +14,5 @@ import java.util.*;
 @NoArgsConstructor
 public class Tips {
     String level;
-    HashMap<String, String> message;
+    List<EvaluateEntity> message;
 }
