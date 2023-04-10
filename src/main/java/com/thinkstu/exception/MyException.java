@@ -1,7 +1,8 @@
 package com.thinkstu.exception;
 
-import com.thinkstu.entity.*;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 /**
  * @author : ThinkStu
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RestControllerAdvice
 public class MyException {
     @ExceptionHandler(Exception.class)
-    ResultEntity exception() {
-        return new ResultEntity(404, null, null, null);
+    Map exception() {
+        HashMap<Object, Object> hashMap = new HashMap<>();
+        hashMap.put("message", "账号不存在！");
+        return hashMap;
     }
 }

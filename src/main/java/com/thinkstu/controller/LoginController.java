@@ -114,6 +114,6 @@ public class LoginController {
         other.setZy(new CommonEntity(zy, "右眼视力"));
 
 //        return new ManEntity(info, other, tipsUtils.bmiEvaluate(bmi.text()));
-        return tipsUtils.bmiEvaluate(info, other, bmi.text());
+        return tipsUtils.bmiEvaluate(info, other);
     }
 }

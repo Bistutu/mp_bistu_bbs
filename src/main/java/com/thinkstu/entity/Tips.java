@@ -3,6 +3,8 @@ package com.thinkstu.entity;
 
 import lombok.*;
 
+import java.util.*;
+
 /**
  * @author : ThinkStu
  * @since : 2023/4/9, 21:44, 周日
@@ -12,6 +14,5 @@ import lombok.*;
 @NoArgsConstructor
 public class Tips {
     String level;
-    String BMIMsg;
-    String CommonMsg;
+    HashMap<String, String> message;
 }

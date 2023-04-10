@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResultEntity {
-    Integer code;
     Info info;
     Other other;
     Tips tips;
