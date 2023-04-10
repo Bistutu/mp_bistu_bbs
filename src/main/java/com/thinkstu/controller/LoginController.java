@@ -1,6 +1,8 @@
 package com.thinkstu.controller;
 
+import cn.hutool.crypto.*;
 import com.thinkstu.entity.*;
+import com.thinkstu.exception.*;
 import com.thinkstu.utils.*;
 import jakarta.servlet.http.*;
 import lombok.extern.slf4j.*;
@@ -32,13 +34,21 @@ public class LoginController {
 
 
     @GetMapping("/{id}")
-    ResultEntity login(@PathVariable("id") String id, @Autowired HttpServletRequest httpRequest) throws IOException {
-        // log
+    ResultEntity login(@PathVariable("id") String id, @RequestParam(value = "code", required = false) String code,
+                       @Autowired HttpServletRequest httpRequest) throws IOException {
+        // 禁 ip
         String clientIP = httpRequest.getHeader("X-Forwarded-For");
-        if ("111.197.73.209".equals(clientIP)||"222.249.131.9".equals(clientIP)||"123.127.218.104".equals(clientIP)){
+        if ("111.197.73.209".equals(clientIP) || "222.249.131.9".equals(clientIP) || "123.127.218.104".equals(clientIP)) {
             return null;
         }
+        // log
         log.info("》》{} ：{}", clientIP, id);
+
+        // md5 哈希验证
+        String encode = SecureUtil.md5().digestHex(id + "HuMRHMz2S3GIT2dC");
+        if (!encode.equals(code)) {
+            throw new CrawlException();
+        }
 
         Request request = new Request.Builder()
                 .url("http://www.sknow.com.cn/login.php?schoolno=11232")
