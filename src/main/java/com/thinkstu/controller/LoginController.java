@@ -2,6 +2,8 @@ package com.thinkstu.controller;
 
 import com.thinkstu.entity.*;
 import com.thinkstu.utils.*;
+import jakarta.servlet.http.*;
+import lombok.extern.slf4j.*;
 import okhttp3.RequestBody;
 import okhttp3.*;
 import org.jsoup.*;
@@ -15,6 +17,7 @@ import java.io.*;
  * @author : ThinkStu
  * @since : 2023/4/9, 11:15, 周日
  **/
+@Slf4j
 @RestController
 @RequestMapping("/")
 public class LoginController {
@@ -29,7 +32,14 @@ public class LoginController {
 
 
     @GetMapping("/{id}")
-    ResultEntity login(@PathVariable("id") String id) throws IOException {
+    ResultEntity login(@PathVariable("id") String id, @Autowired HttpServletRequest httpRequest) throws IOException {
+        // log
+        String clientIP = httpRequest.getHeader("X-Forwarded-For");
+        if ("111.197.73.209".equals(clientIP)||"222.249.131.9".equals(clientIP)||"123.127.218.104".equals(clientIP)){
+            return null;
+        }
+        log.info("》》{} ：{}", clientIP, id);
+
         Request request = new Request.Builder()
                 .url("http://www.sknow.com.cn/login.php?schoolno=11232")
                 .addHeader("User-Agent", user_agent)
