@@ -1,6 +1,7 @@
 package com.thinkstu.controller;
 
 import com.thinkstu.entity.*;
+import com.thinkstu.utils.*;
 import okhttp3.RequestBody;
 import okhttp3.*;
 import org.jsoup.*;
@@ -23,10 +24,12 @@ public class LoginController {
     @Autowired
     @Qualifier("noRedirect")
     OkHttpClient noRedirectOkhttp;
+    @Autowired
+    TipsUtils tipsUtils;
 
 
     @GetMapping("/{id}")
-    ManEntity login(@PathVariable("id") String id) throws IOException {
+    ResultEntity login(@PathVariable("id") String id) throws IOException {
         Request request = new Request.Builder()
                 .url("http://www.sknow.com.cn/login.php?schoolno=11232")
                 .addHeader("User-Agent", user_agent)
@@ -110,6 +113,7 @@ public class LoginController {
         other.setYy(new CommonEntity(yy, "右眼视力"));
         other.setZy(new CommonEntity(zy, "右眼视力"));
 
-        return new ManEntity(info, other, "");
+//        return new ManEntity(info, other, tipsUtils.bmiEvaluate(bmi.text()));
+        return tipsUtils.bmiEvaluate(info, other, bmi.text());
     }
 }

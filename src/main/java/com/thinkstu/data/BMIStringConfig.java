@@ -1,4 +1,4 @@
-package com.thinkstu.config;
+package com.thinkstu.data;
 
 import lombok.*;
 import org.springframework.stereotype.*;

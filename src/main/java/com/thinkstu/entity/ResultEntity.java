@@ -9,8 +9,9 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ManEntity {
+public class ResultEntity {
+    Integer code;
     Info info;
     Other other;
-    String massage;
+    Tips tips;
 }
