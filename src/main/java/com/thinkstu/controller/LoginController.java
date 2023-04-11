@@ -32,20 +32,20 @@ public class LoginController {
     @Autowired
     TipsUtils tipsUtils;
 
+    Integer count = 1;
 
-    @GetMapping("/{id}")
-    ResultEntity login(@PathVariable("id") String id, @RequestParam(value = "code", required = false) String code,
+
+    @GetMapping("/{ids}")
+    ResultEntity login(@PathVariable("ids") String ids,
+                       @RequestParam(value = "code", required = false) String code,
                        @Autowired HttpServletRequest httpRequest) throws IOException {
-        // 禁 ip
+        // 获取 IP
         String clientIP = httpRequest.getHeader("X-Forwarded-For");
-        if ("111.197.73.209".equals(clientIP) || "222.249.131.9".equals(clientIP) || "123.127.218.104".equals(clientIP)) {
-            return null;
-        }
         // log
-        log.info("》》{} ：{}", clientIP, id);
+        log.info("{} 》》{} ：{}", count++, clientIP, ids);
 
         // md5 哈希验证
-        String encode = SecureUtil.md5().digestHex(id + "HuMRHMz2S3GIT2dC");
+        String encode = SecureUtil.md5().digestHex(ids + "HuMRHMz2S3GIT2dC");
         if (!encode.equals(code)) {
             throw new CrawlException();
         }
@@ -60,7 +60,7 @@ public class LoginController {
         response.close();
         // 利用此发送第二个请求
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "studentno=" + id +
+        RequestBody body = RequestBody.create(mediaType, "studentno=" + ids +
                 "&studentpassword=21218cca77804d2ba1922c33e0151105&btnlogin=登　　录");
         request = new Request.Builder()
                 .url("http://www.sknow.com.cn/login.php?type=student")
