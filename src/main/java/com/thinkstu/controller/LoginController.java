@@ -25,10 +25,10 @@ import java.io.*;
 public class LoginController {
     @Autowired
     OkHttpClient client;
-    String user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
     @Autowired
     @Qualifier("noRedirect")
     OkHttpClient noRedirectOkhttp;
+    String user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36";
     @Autowired
     TipsUtils tipsUtils;
 
@@ -44,7 +44,7 @@ public class LoginController {
         // log
         log.info("{} 》》{} ：{}", count++, clientIP, ids);
 
-        // md5 哈希验证
+        // md5 哈希验证，防止恶意爬取
         String encode = SecureUtil.md5().digestHex(ids + "HuMRHMz2S3GIT2dC");
         if (!encode.equals(code)) {
             throw new CrawlException();
@@ -105,6 +105,7 @@ public class LoginController {
         Element xltqq     = doc.select("tr.table_wbg td:containsOwn(坐立体前屈)").first().nextElementSibling();
         Element yy        = doc.select("tr.table_wbg td:containsOwn(左眼视力(无需测试))").first().nextElementSibling();
         Element zy        = doc.select("tr.table_wbg td:containsOwn(右眼视力(无需测试))").first().nextElementSibling();
+        Element score     = doc.select("tr.table_wbg td:containsOwn(成绩)").first().nextElementSibling();
         if ("男".equals(sex)) {
             ytxs = doc.select("tr.table_wbg td:containsOwn(引体向上)").first().nextElementSibling();
             runLong = doc.select("tr.table_wbg td:containsOwn(1000米跑)").first().nextElementSibling();
@@ -132,8 +133,37 @@ public class LoginController {
         other.setXltqq(new CommonEntity(xltqq, "坐位体前屈"));
         other.setYy(new CommonEntity(yy, "右眼视力"));
         other.setZy(new CommonEntity(zy, "右眼视力"));
+        String ScoreText     = score.text();
+        String ScoreEvaluate = "";
+        if (ScoreText.matches(".*(缺项).*")) {
+            // 置空
+            ScoreText = ScoreText.replace("(缺项)", "");
+            ScoreEvaluate = "缺项";
+        }
+        other.setScore(new CommonEntity("总分", "", ScoreText + "分", ScoreEvaluate));
 
 //        return new ManEntity(info, other, tipsUtils.bmiEvaluate(bmi.text()));
         return tipsUtils.bmiEvaluate(info, other);
+    }
+
+//    @CrossOrigin(origins = "*",allowCredentials = "true")
+//    @GetMapping("/photos/**")
+//    String bb(@RequestParam(name = "albumId", required = false, defaultValue = "1") Integer albumId) {
+//        System.out.println("bbbbbbbbbb");
+//        return "1111";
+//    }
+
+//    @CrossOrigin(origins = "http://127.0.0.1:5500",allowCredentials = "true")
+//    @GetMapping("/photos")
+//    String cc(@RequestParam(name = "albumId", required = false, defaultValue = "1") Integer albumId) {
+//        System.out.println("bbbbbbbbbb");
+//        return "2222";
+//    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("/get")
+    String aa() {
+        System.out.println("hello");
+        return "3333";
     }
 }

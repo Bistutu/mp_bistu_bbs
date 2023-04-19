@@ -19,4 +19,5 @@ public class Other {
     CommonEntity xltqq;
     CommonEntity yy;
     CommonEntity zy;
+    CommonEntity score;
 }
