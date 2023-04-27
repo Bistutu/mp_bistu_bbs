@@ -2,7 +2,6 @@ package com.thinkstu.controller;
 
 import cn.hutool.crypto.*;
 import com.thinkstu.entity.*;
-import com.thinkstu.exception.*;
 import com.thinkstu.utils.*;
 import jakarta.servlet.http.*;
 import lombok.extern.slf4j.*;
@@ -34,7 +33,6 @@ public class LoginController {
 
     Integer count = 1;
 
-
     @GetMapping("/{ids}")
     ResultEntity login(@PathVariable("ids") String ids,
                        @RequestParam(value = "code", required = false) String code,
@@ -46,10 +44,11 @@ public class LoginController {
 
         // md5 哈希验证，防止恶意爬取
         String encode = SecureUtil.md5().digestHex(ids + "HuMRHMz2S3GIT2dC");
-        if (!encode.equals(code)) {
-            throw new CrawlException();
-        }
+//        if (!encode.equals(code)) {
+//            throw new CrawlException();
+//        }
 
+        // 第一次
         Request request = new Request.Builder()
                 .url("http://www.sknow.com.cn/login.php?schoolno=11232")
                 .addHeader("User-Agent", user_agent)
@@ -58,8 +57,10 @@ public class LoginController {
         String   set_cookie = response.header("set-cookie");
         String   PHPSESSION = set_cookie.substring(set_cookie.indexOf("=") + 1, set_cookie.lastIndexOf(";"));
         response.close();
+
         // 利用此发送第二个请求
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+//        String    password         = SecureUtil.md5().digestHex("后六位");
         RequestBody body = RequestBody.create(mediaType, "studentno=" + ids +
                 "&studentpassword=21218cca77804d2ba1922c33e0151105&btnlogin=登　　录");
         request = new Request.Builder()
@@ -90,11 +91,14 @@ public class LoginController {
         response = client.newCall(request).execute();
         String data = response.body().string();
         response.close();
-        Document doc     = Jsoup.parse(data);
-        String   name    = doc.select("tr.table_wbg td:containsOwn(姓名)").first().nextElementSibling().text();
-        String   sex     = doc.select("tr.table_wbg td:containsOwn(性别)").first().nextElementSibling().text();
-        Element  ytxs    = null;
-        Element  runLong = null;
+
+
+        Document doc = Jsoup.parse(data);
+
+        String  name    = doc.select("tr.table_wbg td:containsOwn(姓名)").first().nextElementSibling().text();
+        String  sex     = doc.select("tr.table_wbg td:containsOwn(性别)").first().nextElementSibling().text();
+        Element ytxs    = null;
+        Element runLong = null;
 
         String  height    = doc.select("tr.table_wbg td:containsOwn(身高)").first().nextElementSibling().text();
         String  weight    = doc.select("tr.table_wbg td:containsOwn(体重)").first().nextElementSibling().text();
@@ -146,24 +150,5 @@ public class LoginController {
         return tipsUtils.bmiEvaluate(info, other);
     }
 
-//    @CrossOrigin(origins = "*",allowCredentials = "true")
-//    @GetMapping("/photos/**")
-//    String bb(@RequestParam(name = "albumId", required = false, defaultValue = "1") Integer albumId) {
-//        System.out.println("bbbbbbbbbb");
-//        return "1111";
-//    }
 
-//    @CrossOrigin(origins = "http://127.0.0.1:5500",allowCredentials = "true")
-//    @GetMapping("/photos")
-//    String cc(@RequestParam(name = "albumId", required = false, defaultValue = "1") Integer albumId) {
-//        System.out.println("bbbbbbbbbb");
-//        return "2222";
-//    }
-
-    @CrossOrigin(origins = "*")
-    @GetMapping("/get")
-    String aa() {
-        System.out.println("hello");
-        return "3333";
-    }
 }

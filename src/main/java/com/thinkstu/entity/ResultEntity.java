@@ -13,5 +13,4 @@ public class ResultEntity {
     Info info;
     Other other;
     Tips tips;
-
 }
